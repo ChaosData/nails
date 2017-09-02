@@ -1,0 +1,6 @@
+NAME = 'nails'
+
+CFLAGS = ['-std=c11', '-Wall', '-Wextra', '-pedantic', '-g', '-Iplugins/nails/includes', '-DNAILS_DEBUG']
+LDFLAGS = ['-Lplugins/nails/libs']
+LIBS = ['-Wl,-Bstatic', '-lcontroller', '-Wl,-Bdynamic', '-lc++']
+GCC_LIST = ['uwsgi/base.c', 'uwsgi/plugin']

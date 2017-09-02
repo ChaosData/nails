@@ -1,0 +1,21 @@
+- general cleanup
+- sessions
+  - cookie_store
+  - redis
+    - probably just gonna use hiredis
+- DB layer
+  - pooling
+  - should allow request handlers to get a connection
+    - will likely need mutex on the thing that hands them out
+  - need to verify worker cloning situation
+    - don't want separate worker processes sharing connections
+      - will possibly need to init connections in connection manager during
+        request handling
+- assess potential for async
+  - http://projects.unbit.it/uwsgi/wiki/LoopEngine
+  - see https://github.com/unbit/uwsgi/blob/master/plugins/tornado/tornado.c
+  - would likely use libuv; it's treated me fairly well in the past
+  - would need to modify:
+    - body parsing
+    - DB stuff
+    - redis stuff

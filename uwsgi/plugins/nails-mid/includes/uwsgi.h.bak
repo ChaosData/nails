@@ -1,0 +1,16 @@
+#ifndef _UWSGI_H_
+#define _UWSGI_H_
+
+#include <stddef.h>
+#include <stdint.h>
+
+extern "C" {
+  int uwsgi_response_prepare_headers(void*, char const *, uint16_t);
+  int uwsgi_response_add_header(void*, char const*, uint16_t,
+                                       char const*, uint16_t);
+  int uwsgi_response_write_body_do(void*, char const*, size_t);
+  char *uwsgi_request_body_read(void*, ssize_t, ssize_t *);
+
+}
+
+#endif

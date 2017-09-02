@@ -1,0 +1,30 @@
+#include "gen.h"
+#include "controller-helper.h"
+
+ControllerMapper controller_mapper;
+ControllerFactoryMapper controller_factory_mapper;
+
+ExampleRouteSingleController singleton_ExampleRouteSingleController;
+
+ControllerNameMapper controller_name_mapper;
+
+extern "C" void init_controllers() {
+
+  controller_mapper.emplace(type_name(singleton_ExampleRouteSingleController), ControllerActionMapper());
+  controller_factory_mapper.emplace(type_name(singleton_ExampleRouteSingleController), new ControllerFactory<ExampleRouteSingleController>());
+  controller_name_mapper.emplace("ExampleRouteSingle", type_name(singleton_ExampleRouteSingleController));
+  auto& tcam_ExampleRouteSingleController = controller_mapper.at(type_name(singleton_ExampleRouteSingleController));
+  tcam_ExampleRouteSingleController.add("fooer", make_func(&ExampleRouteSingleController::fooer));
+  tcam_ExampleRouteSingleController.add("fooer2", make_func(&ExampleRouteSingleController::fooer2));
+
+
+  router.add("/custom/:id/destroy", {"DELETE", "POST"}, make_func(&ExampleRouteSingleController::destroyer<url,methods>), type_name(singleton_ExampleRouteSingleController));
+}
+
+extern "C" void teardown_controllers() {
+
+  auto* cfm_ExampleRouteSingleController = controller_factory_mapper.at(type_name(singleton_ExampleRouteSingleController));
+  controller_factory_mapper.erase(type_name(singleton_ExampleRouteSingleController));
+  delete cfm_ExampleRouteSingleController;
+
+}

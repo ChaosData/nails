@@ -1,0 +1,39 @@
+MATCHING '/foo/gggggg/_id-55-version-77_/gg'
+             vanilla          mS->true      no COMPLEXregex    
+no args|  373/373::26,062 || <unchanged> || <unchanged>     || 
+1   arg|  467/467::33,926 || <unchanged> || 388/388::26,950 || 
+2  args|  561/561::41,790 || <unchanged> || 403/403::27,838 || 
+
+NON-MATCHING '/foo/gggggg/_id-5a5-version-77_/gg'
+             vanilla          mS->true       mC->true          no COMPLEXregex    
+no args|  373/373::26,062 || <unchanged> || <unchanged>     ||                 ||
+1   arg|  444/444::35,158 || <unchanged> || 438/438::34,822 || 388/388::26,950 || 
+2  args|  515:515::44,254 || <unchanged> || 503/503::43,582 || 
+
+
+             eraser
+2 args( M) | 551/551::41,342
+2 args(NM) | 513/513::44,174
+
+             eraser+strip redundant ^$
+2 args( M) | 547/547::41,230
+2 args(NM) | 509/509::44,062
+
+             eraser + strip redundant ^$ + cmatch
+2 args( M) | 545/545::41,086
+2 args(NM) | 507/507::43,918
+
+             eraser + strip redundant ^$ + cmatch + eliminating std::regex re-creation
+0 args     | 260/260::20,562
+1 arg ( M) | 333/333::27,450
+1 arg (NM) | 321/321::29,186
+2 args( M) | 406/406::34,338
+2 args(NM) | 382/382::37,810
+
+##some more stuff: stripping out stringstream + split&reserve
+0 args     | 256/256::20,298
+1 arg ( M) | 325/325::26,922
+1 arg (NM) | 313/313::28,658
+2 args( M) | 394/394::33,546
+2 args(NM) | 370/370::37,018
+
