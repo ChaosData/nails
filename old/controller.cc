@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string>
 #include <unordered_map>
+#include <stdexcept>
 
 #include "controller-helper.h"
 #include "controller.h"
@@ -56,15 +57,30 @@ void Test2Controller::destroy(Request& req, Response& res) {
 }*/
 
 
-void dyncall(char const* cname, char const* mname) {
-  ControllerActionMapper& cam = controller_mapper.at(cname);
-  auto* f0 = static_cast<func<void(BaseController*,Request&,Response&)>*>(cam.get(mname));
+void dyncall(char const* _cname, char const* mname) {
+  char const* cname = _cname;
+  ControllerActionMapper* cam;
+  try {
+    cam = &(controller_mapper.at(cname));
+  } catch (std::out_of_range oor) {
+    try {
+      cname = controller_name_mapper.at(cname);
+      cam = &(controller_mapper.at(cname));
+    } catch (std::out_of_range oor) {
+      puts("Couldn't find the controller!");
+      return;
+    }
+  }
+  puts("1");
+  auto* f0 = static_cast<func<void(BaseController*,Request&,Response&)>*>(cam->get(mname));
+  puts("2");
   if (f0 == nullptr) {
     puts("null");
   } else {
     auto req = Request();
     auto res = Response();
     //printf("dyncall: %s (%p)\n", typeid(*f0).name(), typeid(*f0).name());
+
     BaseController* bcp = controller_factory_mapper.at(cname)->create();
     if (bcp == nullptr) {
       puts("bcp null");
@@ -86,6 +102,11 @@ int main() {
 
   dyncall(type_name(singleton_TestController), "index");
   dyncall(type_name(singleton_Test2Controller), "destroy");
+
+  dyncall("Test", "index");
+  dyncall("Test2", "destroy");
+  dyncall("Test2", "index");
+  dyncall("Test2", "show");
 
 
   teardown_controllers();

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <stdexcept>
 
 class Request { };
 class Response { };
@@ -56,7 +57,11 @@ class ControllerActionMapper {
     exported_funcs.emplace(std::make_pair(name, f));
   }
   func_base* get(char const* name) {
-    return exported_funcs.at(name);
+    try {
+      return exported_funcs.at(name);
+    } catch (std::out_of_range oor) {
+      return nullptr;
+    }
   }
 
   virtual ~ControllerActionMapper() {
@@ -102,5 +107,8 @@ template<typename T>
 constexpr char const* type_name(T&& obj) {
   return typeid(std::forward<T>(obj)).name();
 }
+
+typedef std::unordered_map<char const*, char const*> ControllerNameMapper;
+extern ControllerNameMapper controller_name_mapper;
 
 #endif
